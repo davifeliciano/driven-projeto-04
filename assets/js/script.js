@@ -14,6 +14,8 @@ const cardFacesDir = {
     { type: "file", name: "c5c3cee183ecb7105747dc0e5566e9fc.jpg" },
   ],
 };
+
+const minCardAmount = 4;
 const maxCardAmount = 2 * cardFacesDir.contents.length;
 
 function isEven(num) {
@@ -68,12 +70,51 @@ function populateCardboard(num) {
   }
 }
 
+function allEqual(array) {
+  /* Retorna true se todos os elementos de um array forem
+     iguais. Do contrário, retorna false */
+  return array.every((value, _, arr) => value === arr[0]);
+}
+
+function compareCards(cardA, cardB) {
+  // Compara as cartas usando o src das imagens de suas faces
+  const cards = [cardA, cardB];
+  const cardsImageSrc = cards.map(
+    (card) => card.querySelector(".card-face > img").src
+  );
+  return allEqual(cardsImageSrc);
+}
+
+function flipCard() {
+  // Função chamada quando uma carta é clicada
+
+  // Se a carta clicada está virada (selecionada ou não), retorne
+  if (this.classList.contains("flipped")) return;
+  const selectedCard = document.querySelector(".card.selected");
+  // Vira e seleciona a carta clicada
+  this.classList.add("flipped", "selected");
+  // Se não ouver carta selecionada, retorne
+  if (selectedCard === null) return;
+  const cards = [this, selectedCard];
+  if (compareCards(this, selectedCard)) {
+    cards.forEach((card) => {
+      card.classList.remove("selected");
+    });
+  } else {
+    setTimeout(() => {
+      cards.forEach((card) => {
+        card.classList.remove("flipped", "selected");
+      });
+    }, 1000);
+  }
+}
+
 function checkCardAmount(num) {
   /* Retorna true se o inteiro passado for uma quantia
      válida de cartas. Do contrário, retorna false */
   if (!isEven(num)) return false;
   if (num > maxCardAmount) return false;
-  if (num < 2) return false;
+  if (num < minCardAmount) return false;
   if (num === NaN || num === null || num === undefined) {
     return false;
   }
@@ -83,7 +124,7 @@ function checkCardAmount(num) {
 function askCardAmount() {
   /* Pede ao usuário uma quantia de cartas. Retorna a primeira
      quantia válida */
-  const promptMessage = `Com quantas cartas quer jogar? Insira um valor entre 2 e ${maxCardAmount}`;
+  const promptMessage = `Com quantas cartas quer jogar? Insira um valor entre ${minCardAmount} e ${maxCardAmount}`;
   let cardAmount;
   while (!checkCardAmount(cardAmount)) {
     cardAmount = parseInt(prompt(promptMessage));
@@ -94,4 +135,9 @@ function askCardAmount() {
 window.onload = () => {
   const cardAmount = askCardAmount();
   populateCardboard(cardAmount);
+
+  const cards = document.querySelectorAll(".card");
+  cards.forEach((card) => {
+    card.addEventListener("click", flipCard);
+  });
 };
