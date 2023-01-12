@@ -1,0 +1,20 @@
+{
+  "name": "Parrot Card Game",
+  "short_name": "Parrot Game",
+  "description": "A bird themed memory game",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#75b79e",
+  "background_color": "#eef9bf",
+  "display": "standalone"
+}
