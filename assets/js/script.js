@@ -54,15 +54,18 @@ function createCard(filename) {
      ao nome de arquivo passado como argumento */
   const listItemElement = document.createElement("li");
   listItemElement.classList.add("card");
+  listItemElement.setAttribute("data-test", "card");
   listItemElement.innerHTML = `
 <div class="card-content">
   <div class="card-back">
     <img src="assets/images/card_back.png"
-         alt="Card Face" width="512" height="639">
+         alt="Card Face" width="512" height="639"
+         data-test="face-down-image">
   </div>
   <div class="card-face">
     <img src="${cardFacesDir.name}/${filename}"
-         alt="Card Back" width="512" height="512">
+         alt="Card Back" width="512" height="512"
+         data-test="face-up-image">
   </div>
 </div>`;
   return listItemElement;
