@@ -17,6 +17,7 @@ const cardFacesDir = {
 
 const minCardAmount = 4;
 const maxCardAmount = 2 * cardFacesDir.contents.length;
+let selectedCards = [];
 
 function isEven(num) {
   // Checa se um número é par
@@ -85,25 +86,50 @@ function compareCards(cardA, cardB) {
   return allEqual(cardsImageSrc);
 }
 
+function getLastSelectedCard() {
+  /* Retorna a última carta selecionada sem par, isto é,
+     que ainda não foi comparada a nenhuma carta. Nesse
+     último caso, retorna null */
+  if (isEven(selectedCards.length)) return null;
+  return selectedCards.at(-1);
+}
+
+function addSelection(card) {
+  // Adiciona a carta ao array selectedCards
+  card.classList.add("flipped", "selected");
+  selectedCards.push(card);
+}
+
+function removeSelection(card) {
+  // Remove a carta do array selectedCards
+  card.classList.remove("selected");
+  selectedCards = selectedCards.filter((value) => value !== card);
+}
+
 function flipCard() {
   // Função chamada quando uma carta é clicada
 
   // Se a carta clicada está virada (selecionada ou não), retorne
   if (this.classList.contains("flipped")) return;
-  const selectedCard = document.querySelector(".card.selected");
-  // Vira e seleciona a carta clicada
-  this.classList.add("flipped", "selected");
+
+  /* Busca a última carta selecionada, 
+     antes de selecionar a carta clicada */
+  const lastSelectedCard = getLastSelectedCard();
+  addSelection(this);
+
   // Se não ouver carta selecionada, retorne
-  if (selectedCard === null) return;
-  const cards = [this, selectedCard];
-  if (compareCards(this, selectedCard)) {
+  if (lastSelectedCard === null) return;
+
+  const cards = [this, lastSelectedCard];
+  if (compareCards(this, lastSelectedCard)) {
     cards.forEach((card) => {
-      card.classList.remove("selected");
+      removeSelection(card);
     });
   } else {
     setTimeout(() => {
       cards.forEach((card) => {
-        card.classList.remove("flipped", "selected");
+        removeSelection(card);
+        card.classList.remove("flipped");
       });
     }, 1000);
   }
