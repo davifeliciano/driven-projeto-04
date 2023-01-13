@@ -93,3 +93,22 @@ h1 {
     filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.25));
     transition: all 600ms ease-in-out;
 }
+
+.game-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-size: 3.6rem;
+    font-weight: 700;
+    position: absolute;
+    right: 2rem;
+    top: 2rem;
+}
+
+.game-stats .flip-counter {
+    color: darkgreen;
+}
+
+.game-stats .timer {
+    color: var(--heading-color);
+}

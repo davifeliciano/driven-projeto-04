@@ -19,6 +19,16 @@ const minCardAmount = 4;
 const maxCardAmount = 2 * cardFacesDir.contents.length;
 let selectedCards = [];
 
+// Elementos do jogo
+const cardboard = document.querySelector(".cardboard");
+const flipCounter = document.querySelector(".flip-counter");
+const timer = document.querySelector(".timer");
+
+// Globais para guardar progresso do jogo
+let intervalId;
+let cardsFlipped = 0;
+let elapsedSeconds = 0;
+
 function isEven(num) {
   // Checa se um número é par
   return num % 2 === 0;
@@ -61,7 +71,6 @@ function createCard(filename) {
 function populateCardboard(num) {
   // Dada uma quantidade par de cartas, popula o board
   if (checkCardAmount(num) === false) return;
-  const cardboard = document.querySelector(".cardboard");
   const images = cardFacesDir.contents.slice(0, num / 2);
   // Duplica os nomes de arquivo e os embaralha
   const shuffledImages = shuffle(images.concat(images));
@@ -98,6 +107,8 @@ function addSelection(card) {
   // Adiciona a carta ao array selectedCards
   card.classList.add("flipped", "selected");
   selectedCards.push(card);
+  cardsFlipped++;
+  flipCounter.innerText = cardsFlipped;
 }
 
 function removeSelection(card) {
@@ -112,7 +123,7 @@ function flipCard() {
   // Se a carta clicada está virada (selecionada ou não), retorne
   if (this.classList.contains("flipped")) return;
 
-  /* Busca a última carta selecionada, 
+  /* Busca a última carta selecionada,
      antes de selecionar a carta clicada */
   const lastSelectedCard = getLastSelectedCard();
   addSelection(this);
@@ -125,6 +136,11 @@ function flipCard() {
     cards.forEach((card) => {
       removeSelection(card);
     });
+    // Se forem as últimas duas cartas, encerre o jogo
+    if (noMoreCards()) {
+      // Timeout para término da última animação
+      setTimeout(endGame, 700);
+    }
   } else {
     setTimeout(() => {
       cards.forEach((card) => {
@@ -158,12 +174,72 @@ function askCardAmount() {
   return cardAmount;
 }
 
-window.onload = () => {
+function incrementTimer() {
+  // Incrementa o número de segundos no timer
+  elapsedSeconds++;
+  timer.innerText = elapsedSeconds;
+}
+
+function startTimer() {
+  // Inicia a contagem do tempo de jogo
+  intervalId = setInterval(incrementTimer, 1000);
+}
+
+function stopTimer() {
+  // Para a contagem do tempo de jogo
+  clearInterval(intervalId);
+}
+
+function noMoreCards() {
+  // Checa se o jogo chegou ao fim
+  const unflippedCard = document.querySelector(".card:not(.flipped)");
+  if (unflippedCard === null) return true;
+  return false;
+}
+
+function startGame() {
+  // Reseta todos os elementos e da início ao jogo
+
+  // Resetando elementos
+  cardboard.innerHTML = "";
+  flipCounter.innerHTML = "0";
+  timer.innerHTML = "0";
+  cardsFlipped = 0;
+  elapsedSeconds = 0;
+
+  // Embaralhando ordem das cartas
+  cardFacesDir.contents = shuffle(cardFacesDir.contents);
+
+  // Populando board
   const cardAmount = askCardAmount();
   populateCardboard(cardAmount);
 
+  // Adiciona event listeners em todas as cartas
   const cards = document.querySelectorAll(".card");
   cards.forEach((card) => {
     card.addEventListener("click", flipCard);
   });
-};
+
+  startTimer();
+}
+
+function endGame() {
+  // Finaliza o jogo, dando a opção de novo jogo ao usuário
+  stopTimer();
+  alert(
+    `Você ganhou em ${cardsFlipped} jogadas! A duração do jogo foi de ${elapsedSeconds} segundos!`
+  );
+
+  while (true) {
+    const answer = prompt(
+      "Deseja jogar novamente? (Responda sim ou não)"
+    ).trim();
+    if (answer === "não") break;
+    if (answer === "sim") {
+      startGame();
+      break;
+    }
+  }
+}
+
+window.onload = startGame;
