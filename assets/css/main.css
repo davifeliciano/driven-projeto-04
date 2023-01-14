@@ -3,6 +3,9 @@
     --heading-color: #75B79E;
     --card-color: #A7E9AF;
     --card-border-color: #99CEA8;
+    --card-width: 11.7rem;
+    --card-height: 14.6rem;
+    --mobile-scale-factor: 1.25;
 }
 
 html {
@@ -49,8 +52,8 @@ h1 {
 }
 
 .card-content {
-    width: 117px;
-    height: 146px;
+    width: var(--card-width);
+    height: var(--card-height);
     transform-style: preserve-3d;
     transform: rotateY(0deg);
     position: relative;
@@ -81,6 +84,8 @@ h1 {
     width: 100%;
     height: auto;
     border-radius: 5px;
+    user-select: none;
+    -webkit-user-drag: none;
 }
 
 .card.flipped .card-content {
@@ -118,5 +123,12 @@ h1 {
 @media (max-width: 768px) {
     h1 {
         font-size: 3.6rem;
+    }
+}
+
+@media (max-width: 510px) {
+    .card-content {
+        width: calc(var(--mobile-scale-factor) * var(--card-width));
+        height: calc(var(--mobile-scale-factor) * var(--card-height));
     }
 }
