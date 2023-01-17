@@ -68,13 +68,6 @@ function createCard(filename) {
          data-test="face-up-image">
   </div>
 </div>`;
-
-  const options = {
-    duration: 500,
-    easing: "ease-in-out",
-    direction: "reverse",
-  };
-  listItemElement.animate({ opacity: 0 }, options);
   return listItemElement;
 }
 
@@ -88,6 +81,14 @@ function populateCardboard(num) {
     const card = createCard(image.name);
     cardboard.appendChild(card);
   }
+
+  // Animação de fade in no board
+  const options = {
+    duration: 500,
+    easing: "ease-in-out",
+    direction: "reverse",
+  };
+  cardboard.animate({ opacity: 0 }, options);
 }
 
 function allEqual(array) {
